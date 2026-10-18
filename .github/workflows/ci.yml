@@ -1,0 +1,20 @@
+name: C++ verification
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: make test CXX=clang++
+      - name: Address and undefined behavior sanitizers
+        run: make sanitize CXX=clang++
+      - name: Numerical benchmark smoke check
+        run: make benchmark CXX=clang++
